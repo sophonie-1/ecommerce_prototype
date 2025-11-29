@@ -13,7 +13,7 @@ import { CartProvider } from './context/CartContext';
 function App() {
   return (
   <CartProvider>
-    <Router basename="/MARZ_Ecommerce">
+    <Router basename="/ecommerce_prototype">
       <div className="min-h-screen bg-gray-50 flex flex-col">
         <Header />
         <main className="flex-grow pt-20">
