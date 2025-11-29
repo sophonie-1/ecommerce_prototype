@@ -1,10 +1,8 @@
-# Marz E-Commerce Prototype
-
-![Marz Computers Logo](https://via.placeholder.com/120x40/2563eb/ffffff?text=Marz+Computers) <!-- Replace with actual logo if added -->
+## Marz E-Commerce Prototype
 
 A simple, responsive e-commerce prototype for selling computers (laptops, desktops, accessories). Built with React and Vite for fast development and deployment. This is a frontend-only app using mock data—no backend required for demo purposes.
 
-**Live Demo**: [https://ntigirinzigo.github.io/MARZ-Ecommerce](https://ntigirinzigo.github.io/MARZ-Ecommerce) <!-- Replace with your actual GitHub Pages URL -->
+**Live Demo**: [https://sophonie-1.github.io/ecommerce_prototype](https://sophonie-1.github.io/ecommerce_prototype) <!-- Replace with your actual GitHub Pages URL -->
 
 ## 🚀 Features
 - **Product Browsing**: Grid view of 8 sample products with images, prices, ratings, and descriptions.
@@ -28,7 +26,7 @@ A simple, responsive e-commerce prototype for selling computers (laptops, deskto
 
 1. **Clone the Repo**:
    ```bash
-   git clone https://github.com/ntigirinzigo/MARZ-Ecommerce.git
+   git clone https://github.com/sophonie-1/ecommerce_prototype.git
    cd marz-ecommerce
    ```
 
@@ -62,18 +60,6 @@ A simple, responsive e-commerce prototype for selling computers (laptops, deskto
 - Images from Unsplash (CDN)—replace with your assets in `src/data/products.js`.
 - Test mobile: Resize browser or use DevTools device emulation.
 
-## 📱 Screenshots
-
-### Home Page
-![Home](https://via.placeholder.com/800x400?text=Home+Hero+Banner) <!-- Add real screenshot -->
-
-### Products Grid (Desktop)
-![Products](https://via.placeholder.com/800x400?text=Products+Grid+with+Search) <!-- Filtered view -->
-
-### Cart & Checkout
-![Cart](https://via.placeholder.com/800x400?text=Shopping+Cart+Summary)  
-![Checkout](https://via.placeholder.com/800x400?text=Checkout+Form)
-
 ## 🗺 Roadmap
 - **v2**: Backend integration (e.g., Firebase for auth/orders, real API).
 - **v3**: User authentication (login/register), wishlist, reviews.
@@ -94,5 +80,5 @@ This project is open-source under the MIT License. See [LICENSE](LICENSE) for de
 
 ---
 
-*Built with ❤️ by Ntigirinzigo J.paul on November 28, 2025. Inspired by modern e-comm UX.*  
+*Built with ❤️ by BUKIRA SOPHONIE on November 29, 2025. Inspired by modern e-comm UX.*  
 *Star the repo if it helps! ⭐*
