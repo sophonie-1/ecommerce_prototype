@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Quick mobile menu toggle (JS needed later) */
+
+@media (max-width: 767px) {
+    .mobile-menu {
+        display: flex;
+        flex-direction: column;
+    }
+}
+
+
+/* Mobile touch targets */
+
+button,
+input,
+select {
+    min-height: 44px;
+    /* Apple Human Interface min */
+}
+
+.md\:min-w-0 {
+    min-width: 0;
+}
+
+
+/* Already in, but ensure */
