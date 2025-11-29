@@ -27,7 +27,7 @@ A simple, responsive e-commerce prototype for selling computers (laptops, deskto
 1. **Clone the Repo**:
    ```bash
    git clone https://github.com/sophonie-1/ecommerce_prototype.git
-   cd marz-ecommerce
+   ecommerce_prototype
    ```
 
 2. **Install Dependencies**:

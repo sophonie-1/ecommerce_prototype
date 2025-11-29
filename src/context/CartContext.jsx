@@ -7,55 +7,71 @@ const initialState = {
   totalPrice: 0,
 };
 
-// Reducer for cart actions
+// Helper: Recalculate totals from items (ensures consistency)
+const calculateTotals = (items) => {
+  const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
+  const totalPrice = items.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
+  return { totalItems, totalPrice };
+};
+
+// Reducer (added recalculate in LOAD_CART)
 const cartReducer = (state, action) => {
   switch (action.type) {
+    case 'LOAD_CART':
+      const { items, totalItems: savedTotalItems, totalPrice: savedTotalPrice } = action.payload;
+      // Recalculate to ensure accuracy (override saved totals if drifted)
+      const { totalItems: calcItems, totalPrice: calcPrice } = calculateTotals(items);
+      console.log('Loaded cart:', { items: items.length, calcItems, calcPrice, savedTotalItems, savedTotalPrice }); // Debug: Check on load
+      return {
+        ...state,
+        items,
+        totalItems: calcItems, // Use calculated
+        totalPrice: calcPrice, // Use calculated
+      };
     case 'ADD_ITEM':
       const existingItem = state.items.find((item) => item.product.id === action.payload.product.id);
+      let newState;
       if (existingItem) {
-        return {
+        newState = {
           ...state,
           items: state.items.map((item) =>
             item.product.id === action.payload.product.id
               ? { ...item, quantity: item.quantity + action.payload.quantity }
               : item
           ),
-          totalItems: state.totalItems + action.payload.quantity,
-          totalPrice: state.totalPrice + action.payload.product.price * action.payload.quantity,
+        };
+      } else {
+        newState = {
+          ...state,
+          items: [...state.items, action.payload],
         };
       }
-      return {
-        ...state,
-        items: [...state.items, action.payload],
-        totalItems: state.totalItems + action.payload.quantity,
-        totalPrice: state.totalPrice + action.payload.product.price * action.payload.quantity,
-      };
+      const { totalItems, totalPrice } = calculateTotals(newState.items);
+      return { ...newState, totalItems, totalPrice };
     case 'UPDATE_QUANTITY':
       const updatedItems = state.items.map((item) =>
         item.product.id === action.payload.id
           ? { ...item, quantity: action.payload.quantity }
           : item
-      );
-      // Recalculate totals
-      const newTotalItems = updatedItems.reduce((sum, item) => sum + item.quantity, 0);
-      const newTotalPrice = updatedItems.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+      ).filter((item) => item.quantity > 0); // Remove if 0
+      const { totalItems: newTotalItems, totalPrice: newTotalPrice } = calculateTotals(updatedItems);
       return {
         ...state,
-        items: updatedItems.filter((item) => item.quantity > 0), // Remove if 0
+        items: updatedItems,
         totalItems: newTotalItems,
         totalPrice: newTotalPrice,
       };
     case 'REMOVE_ITEM':
       const filteredItems = state.items.filter((item) => item.product.id !== action.payload.id);
-      const removeTotalItems = state.items.reduce((sum, item) => item.product.id === action.payload.id ? sum - item.quantity : sum, 0);
-      const removeTotalPrice = state.items.reduce((sum, item) => item.product.id === action.payload.id ? sum - (item.product.price * item.quantity) : sum, 0);
+      const { totalItems: removeTotalItems, totalPrice: removeTotalPrice } = calculateTotals(filteredItems);
       return {
         ...state,
         items: filteredItems,
-        totalItems: Math.max(0, state.totalItems + removeTotalItems), // Ensure non-negative
-        totalPrice: Math.max(0, state.totalPrice + removeTotalPrice),
+        totalItems: removeTotalItems,
+        totalPrice: removeTotalPrice,
       };
     case 'CLEAR_CART':
+      console.log('Cart cleared - removing from localStorage'); // Debug
       return initialState;
     default:
       return state;
@@ -68,14 +84,33 @@ const CartContext = createContext();
 export const CartProvider = ({ children }) => {
   const [state, dispatch] = useReducer(cartReducer, initialState);
 
-  // Optional: Persist to localStorage (uncomment if wanted)
+  // Save to localStorage on state change (skip if empty)
   useEffect(() => {
-    localStorage.setItem('cart', JSON.stringify(state));
+    if (state.items.length === 0) return; // Don't save empty state
+    try {
+      localStorage.setItem('marz-cart', JSON.stringify(state));
+      console.log('Cart saved to localStorage:', state); // Debug: Confirm save
+    } catch (error) {
+      console.error('Failed to save cart to localStorage:', error);
+    }
   }, [state]);
+
+  // Load from localStorage on mount
   useEffect(() => {
-    const saved = localStorage.getItem('cart');
-    if (saved) dispatch({ type: 'LOAD_CART', payload: JSON.parse(saved) });
-  }, []);
+    try {
+      const saved = localStorage.getItem('marz-cart');
+      if (saved) {
+        const parsedState = JSON.parse(saved);
+        if (parsedState.items && parsedState.items.length > 0) {
+          dispatch({ type: 'LOAD_CART', payload: parsedState });
+          console.log('Restored cart from localStorage'); // Debug: Confirm load
+        }
+      }
+    } catch (error) {
+      console.error('Failed to load cart from localStorage:', error);
+      localStorage.removeItem('marz-cart'); // Clear corrupted data
+    }
+  }, []); // Run once on mount
 
   return (
     <CartContext.Provider value={{ state, dispatch }}>
